@@ -21,7 +21,7 @@ jobs:
 
             - name: Install dependencies and build React app
               run: |
-                  npm ci
+                  npm i
                   npm run build
 
             - name: Deploy to VPS via SSH
