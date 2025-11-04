@@ -1,27 +1,26 @@
-name: Build & Deploy React App to VPS
+name: Deploy React App to VPS
 
 on:
     push:
         branches:
-            - main # triggers when you push to main
+            - main
 
 jobs:
-    deploy:
+    build-and-deploy:
         runs-on: ubuntu-latest
 
         steps:
-            - name: Checkout repository
+            - name: Checkout code
               uses: actions/checkout@v4
 
-            - name: Setup Node.js
+            - name: Setup Node
               uses: actions/setup-node@v4
               with:
-                  node-version: 20
-                  cache: "npm"
+                  node-version: "18"
 
-            - name: Install dependencies and build React app
+            - name: Install dependencies and build
               run: |
-                  npm i
+                  npm install
                   npm run build
 
             - name: Deploy to VPS via SSH
@@ -29,28 +28,9 @@ jobs:
               with:
                   host: 31.97.236.73
                   username: root
-                  key: ~/.ssh/github_actions_key
-                  port: 22
+                  key: "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAINkqV61iZY1W1ZaYHvvoV1VNa4ep0dj6Aq99e/uuhpTL github-actions@skillbridgebd"
                   script: |
-                      mkdir -p /home/sb_root/website/demo
-                      rm -rf /home/sb_root/website/demo/*
-
-            - name: Copy build folder to VPS
-              uses: appleboy/scp-action@v0.1.4
-              with:
-                  host: 31.97.236.73
-                  username: root
-                  key: ~/.ssh/github_actions_key
-                  port: 22
-                  source: "build/*"
-                  target: "/home/sb_root/demo/"
-
-            - name: Restart nginx
-              uses: appleboy/ssh-action@v0.1.10
-              with:
-                  host: 31.97.236.73
-                  username: root
-                  key: ~/.ssh/github_actions_key
-                  port: 22
-                  script: |
-                      sudo systemctl reload nginx || sudo service nginx reload
+                      cd /home/sb_root/website/demo || mkdir -p /home/sb_root/website/demo && cd /home/sb_root/website/demo
+                      npm install
+                      npm run build
+                      systemctl reload nginx
