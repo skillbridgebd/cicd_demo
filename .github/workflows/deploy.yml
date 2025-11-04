@@ -16,7 +16,7 @@ jobs:
             - name: Setup Node.js
               uses: actions/setup-node@v4
               with:
-                  node-version: 18
+                  node-version: 20
                   cache: "npm"
 
             - name: Install dependencies and build React app
@@ -32,8 +32,8 @@ jobs:
                   key: ~/.ssh/github_actions_key
                   port: 22
                   script: |
-                      mkdir -p /home/sb_root/demo
-                      rm -rf /home/sb_root/demo/*
+                      mkdir -p /home/sb_root/website/demo
+                      rm -rf /home/sb_root/website/demo/*
 
             - name: Copy build folder to VPS
               uses: appleboy/scp-action@v0.1.4
