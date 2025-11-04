@@ -1,36 +1,37 @@
 name: Deploy React App to VPS
 
 on:
-    push:
-        branches:
-            - main
+  push:
+    branches:
+      - main
 
 jobs:
-    build-and-deploy:
-        runs-on: ubuntu-latest
+  build-and-deploy:
+    runs-on: ubuntu-latest
 
-        steps:
-            - name: Checkout code
-              uses: actions/checkout@v4
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
 
-            - name: Setup Node
-              uses: actions/setup-node@v4
-              with:
-                  node-version: "20"
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
 
-            - name: Install dependencies and build
-              run: |
-                  npm install
-                  npm run build
+      - name: Install dependencies and build
+        run: |
+          npm install
+          npm run build
 
-            - name: Deploy to VPS via SSH
-              uses: appleboy/ssh-action@v0.1.10
-              with:
-                  host: 31.97.236.73
-                  username: root
-                  key: "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAINkqV61iZY1W1ZaYHvvoV1VNa4ep0dj6Aq99e/uuhpTL github-actions@skillbridgebd"
-                  script: |
-                      cd /home/sb_root/website/demo || mkdir -p /home/sb_root/website/demo && cd /home/sb_root/website/demo
-                      npm install
-                      npm run build
-                      systemctl reload nginx
+      - name: Deploy to VPS via SSH
+        uses: appleboy/ssh-action@v0.1.10
+        with:
+          host: 31.97.236.73
+          username: root
+          key: ${{ secrets.VPS_SSH_KEY }}
+          script: |
+            cd /home/sb_root/website/demo || mkdir -p /home/sb_root/website/demo && cd /home/sb_root/website/demo
+            git pull origin main
+            npm install
+            npm run build
+            systemctl reload nginx
