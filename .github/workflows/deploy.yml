@@ -35,6 +35,7 @@ jobs:
             nvm use 22
             cd /home/sb_root/website/demo || mkdir -p /home/sb_root/website/demo && cd /home/sb_root/website/demo
             git reset --hard
+            git clean -fd
             git pull origin main
             npm install
             npm run build
