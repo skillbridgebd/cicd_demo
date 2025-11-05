@@ -33,6 +33,6 @@ jobs:
             cd /home/sb_root/website/demo || mkdir -p /home/sb_root/website/demo && cd /home/sb_root/website/demo
             git reset --hard
             git pull origin main
-            yarn
-            yarn build
+            npm install
+            npm run build
             systemctl reload nginx
